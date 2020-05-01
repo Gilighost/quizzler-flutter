@@ -31,12 +31,34 @@ enum answerValidity {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
+  int questionIndex = 0;
+
+  List<String> questions = [
+    'The capital of Libya is Benghazi.', // false
+    'Albert Einstein was awarded the Nobel Prize in Physics.', // true
+    'The first name of Kramer in Seinfeld is Cosmo', //true
+    'Gone with the Wind takes place in Savannah, Georgia', // false
+  ];
+
+  List<bool> answers = [
+    false,
+    true,
+    true,
+    false,
+  ];
+
+  void answerQuestion({int questionNumber, bool userAnswer}) {
+    addToScoreKeeper(userAnswer == answers[questionNumber]
+        ? answerValidity.correct
+        : answerValidity.incorrect);
+  }
 
   void addToScoreKeeper(answerValidity answer) {
     setState(() {
       scoreKeeper.add(answer == answerValidity.correct
           ? Icon(Icons.check, color: Colors.green)
           : Icon(Icons.close, color: Colors.red));
+      ++questionIndex;
     });
   }
 
@@ -52,7 +74,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'This is where the question text will go.',
+                questions[questionIndex],
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -76,7 +98,10 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                addToScoreKeeper(answerValidity.correct);
+                answerQuestion(
+                  questionNumber: questionIndex,
+                  userAnswer: true,
+                );
               },
             ),
           ),
@@ -94,7 +119,10 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                addToScoreKeeper(answerValidity.incorrect);
+                answerQuestion(
+                  questionNumber: questionIndex,
+                  userAnswer: false,
+                );
               },
             ),
           ),
