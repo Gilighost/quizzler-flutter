@@ -24,7 +24,22 @@ class QuizPage extends StatefulWidget {
   _QuizPageState createState() => _QuizPageState();
 }
 
+enum answerValidity {
+  correct,
+  incorrect,
+}
+
 class _QuizPageState extends State<QuizPage> {
+  List<Icon> scoreKeeper = [];
+
+  void addToScoreKeeper(answerValidity answer) {
+    setState(() {
+      scoreKeeper.add(answer == answerValidity.correct
+          ? Icon(Icons.check, color: Colors.green)
+          : Icon(Icons.close, color: Colors.red));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -61,7 +76,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                //The user picked true.
+                addToScoreKeeper(answerValidity.correct);
               },
             ),
           ),
@@ -79,12 +94,14 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                //The user picked false.
+                addToScoreKeeper(answerValidity.incorrect);
               },
             ),
           ),
         ),
-        //TODO: Add a Row here for score keeper
+        Row(
+          children: scoreKeeper,
+        )
       ],
     );
   }
