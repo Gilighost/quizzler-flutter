@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'question.dart';
 
 void main() => runApp(Quizzler());
 
@@ -33,22 +34,27 @@ class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
   int questionIndex = 0;
 
-  List<String> questions = [
-    'The capital of Libya is Benghazi.', // false
-    'Albert Einstein was awarded the Nobel Prize in Physics.', // true
-    'The first name of Kramer in Seinfeld is Cosmo', //true
-    'Gone with the Wind takes place in Savannah, Georgia', // false
-  ];
-
-  List<bool> answers = [
-    false,
-    true,
-    true,
-    false,
+  List<Question> questions = [
+    Question(
+      question: 'The capital of Libya is Benghazi.',
+      answer: false,
+    ),
+    Question(
+      question: 'Albert Einstein was awarded the Nobel Prize in Physics.',
+      answer: true,
+    ),
+    Question(
+      question: 'The first name of Kramer in Seinfeld is Cosmo',
+      answer: true,
+    ),
+    Question(
+      question: 'Gone with the Wind takes place in Savannah, Georgia',
+      answer: false,
+    ),
   ];
 
   void answerQuestion({int questionNumber, bool userAnswer}) {
-    addToScoreKeeper(userAnswer == answers[questionNumber]
+    addToScoreKeeper(userAnswer == questions[questionNumber].questionAnswer
         ? answerValidity.correct
         : answerValidity.incorrect);
   }
@@ -74,7 +80,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questions[questionIndex],
+                questions[questionIndex].questionText,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
