@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'quiz.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 void main() => runApp(Quizzler());
 
@@ -25,29 +26,51 @@ class QuizPage extends StatefulWidget {
   _QuizPageState createState() => _QuizPageState();
 }
 
-enum answerValidity {
-  correct,
-  incorrect,
-}
-
 class _QuizPageState extends State<QuizPage> {
   Quiz quiz = Quiz();
   List<Icon> scoreKeeper = [];
 
-  void answerQuestion({bool userAnswer}) {
-    addToScoreKeeper(userAnswer == quiz.getQuestionAnswer()
-        ? answerValidity.correct
-        : answerValidity.incorrect);
-  }
-
-  void addToScoreKeeper(answerValidity answer) {
+  void reset() {
     setState(() {
-      scoreKeeper.add(answer == answerValidity.correct
-          ? Icon(Icons.check, color: Colors.green)
-          : Icon(Icons.close, color: Colors.red));
-      quiz.nextQuestion();
+      quiz = Quiz();
+      scoreKeeper = [];
     });
   }
+
+  void answerQuestion({bool userAnswer}) {
+    setState(() {
+      scoreKeeper.add(quiz.checkAnswer(userAnswer)
+          ? Icon(Icons.check, color: Colors.green)
+          : Icon(Icons.close, color: Colors.red));
+
+      quiz.nextQuestion();
+    });
+
+    if (quiz.isCompleted) {
+      String score = quiz.getScore().toStringAsPrecision(2);
+      Alert(
+        context: this.context,
+        type: AlertType.success,
+        title: 'Quiz completed!',
+        desc: 'You got %$score correct.',
+        buttons: [
+          DialogButton(
+              onPressed: () {
+                reset();
+                Navigator.pop(this.context);
+              },
+              child: Text("OK"))
+        ],
+        style: AlertStyle(
+          animationType: AnimationType.fromTop,
+          isCloseButton: false,
+          isOverlayTapDismiss: false,
+        ),
+      ).show();
+    }
+  }
+
+  void addToScoreKeeper(bool isUserCorrect) {}
 
   @override
   Widget build(BuildContext context) {
