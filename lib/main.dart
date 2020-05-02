@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'question.dart';
+import 'quiz.dart';
 
 void main() => runApp(Quizzler());
 
@@ -31,30 +31,11 @@ enum answerValidity {
 }
 
 class _QuizPageState extends State<QuizPage> {
+  Quiz quiz = Quiz();
   List<Icon> scoreKeeper = [];
-  int questionIndex = 0;
 
-  List<Question> questions = [
-    Question(
-      question: 'The capital of Libya is Benghazi.',
-      answer: false,
-    ),
-    Question(
-      question: 'Albert Einstein was awarded the Nobel Prize in Physics.',
-      answer: true,
-    ),
-    Question(
-      question: 'The first name of Kramer in Seinfeld is Cosmo',
-      answer: true,
-    ),
-    Question(
-      question: 'Gone with the Wind takes place in Savannah, Georgia',
-      answer: false,
-    ),
-  ];
-
-  void answerQuestion({int questionNumber, bool userAnswer}) {
-    addToScoreKeeper(userAnswer == questions[questionNumber].questionAnswer
+  void answerQuestion({bool userAnswer}) {
+    addToScoreKeeper(userAnswer == quiz.getQuestionAnswer()
         ? answerValidity.correct
         : answerValidity.incorrect);
   }
@@ -64,7 +45,7 @@ class _QuizPageState extends State<QuizPage> {
       scoreKeeper.add(answer == answerValidity.correct
           ? Icon(Icons.check, color: Colors.green)
           : Icon(Icons.close, color: Colors.red));
-      ++questionIndex;
+      quiz.nextQuestion();
     });
   }
 
@@ -80,7 +61,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questions[questionIndex].questionText,
+                quiz.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -104,10 +85,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                answerQuestion(
-                  questionNumber: questionIndex,
-                  userAnswer: true,
-                );
+                answerQuestion(userAnswer: true);
               },
             ),
           ),
@@ -125,10 +103,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                answerQuestion(
-                  questionNumber: questionIndex,
-                  userAnswer: false,
-                );
+                answerQuestion(userAnswer: false);
               },
             ),
           ),
@@ -140,9 +115,3 @@ class _QuizPageState extends State<QuizPage> {
     );
   }
 }
-
-/*
-question1: 'You can lead a cow down stairs but not up stairs.', false,
-question2: 'Approximately one quarter of human bones are in the feet.', true,
-question3: 'A slug\'s blood is green.', true,
-*/
